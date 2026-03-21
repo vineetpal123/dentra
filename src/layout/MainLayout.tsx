@@ -13,6 +13,7 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   background: #f8fafc;
+  overflow: auto;
 `;
 
 const Main = styled.div`

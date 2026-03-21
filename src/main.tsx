@@ -9,6 +9,7 @@ import { lightTheme, darkTheme } from "./theme";
 import GlobalLoader from "./components/GlobalLoader";
 import GlobalSnackbar from "./components/GlobalSnackbar";
 import AppRoutes from "./AppRoutes";
+import { CalendarStyles } from "./styles/CalendarStyles";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -18,6 +19,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <CssBaseline />
           <GlobalLoader />
           <GlobalSnackbar />
+          <CalendarStyles />
           <AppRoutes />
         </ThemeProvider>
       </LocalizationProvider>
