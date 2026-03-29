@@ -1,11 +1,15 @@
 // Dashboard.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import * as S from "./dashboard.styled";
 import AppointmentFormDialog from "../components/AppointmentFormDialog";
+import { useDispatch, useSelector } from "react-redux";
+
+import { fetchDashboardRequest } from "../store/dashboard/slice";
+import { selectDashboardData } from "../store/dashboard/selectors";
 
 const localizer = momentLocalizer(moment);
 
@@ -13,8 +17,8 @@ const initialEvents = [
   {
     id: 1,
     title: "John Doe - Checkup",
-    start: new Date(2026, 2, 21, 10, 0),
-    end: new Date(2026, 2, 21, 11, 0),
+    start: new Date(2026, 3, 21, 10, 0),
+    end: new Date(2026, 3, 21, 11, 0),
     patient: "John Doe",
     type: "Checkup",
   },
@@ -29,7 +33,12 @@ const initialEvents = [
 ];
 
 const Dashboard = () => {
-  const [events] = useState(initialEvents);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchDashboardRequest());
+  }, [dispatch]);
+  const { summary, calendar, todayAppointments, timeline } =
+    useSelector(selectDashboardData) || {};
 
   const [openForm, setOpenForm] = useState(false);
 
@@ -43,15 +52,15 @@ const Dashboard = () => {
       <S.Cards>
         <S.Card onClick={() => (window.location.href = "/appointments")}>
           <S.CardTitle>Today's Appointments</S.CardTitle>
-          <S.CardValue>{events.length}</S.CardValue>
+          <S.CardValue>{summary.todayAppointments || 0}</S.CardValue>
         </S.Card>
         <S.Card>
           <S.CardTitle>New Patients</S.CardTitle>
-          <S.CardValue>3</S.CardValue>
+          <S.CardValue>{summary.newPatients || 0}</S.CardValue>
         </S.Card>
         <S.Card>
           <S.CardTitle>Pending Cancellations</S.CardTitle>
-          <S.CardValue>1</S.CardValue>
+          <S.CardValue>{summary.pendingCancellations || 0}</S.CardValue>
         </S.Card>
       </S.Cards>
 
@@ -62,7 +71,7 @@ const Dashboard = () => {
           <S.CalendarWrapper>
             <Calendar
               localizer={localizer}
-              events={events}
+              events={calendar}
               startAccessor="start"
               endAccessor="end"
               style={{ height: 420 }}
@@ -79,7 +88,7 @@ const Dashboard = () => {
           </S.CalendarWrapper>
 
           <S.AppointmentsBox>
-            {events.slice(0, 5).map((item) => (
+            {timeline.slice(0, 5).map((item) => (
               <S.AppointmentItem
                 key={item.id}
                 onClick={() => {
@@ -90,7 +99,7 @@ const Dashboard = () => {
                 <S.UserInfo>
                   <S.Avatar />
                   <div>
-                    <strong>{item.patient}</strong>
+                    <strong>{item.patientName}</strong>
                     <S.SubText>Dental Care</S.SubText>
                   </div>
                 </S.UserInfo>
@@ -107,11 +116,11 @@ const Dashboard = () => {
 
       <S.TableSection>
         <S.TableTitle>Today's Schedule</S.TableTitle>
-        {events.map((item) => (
+        {todayAppointments.map((item) => (
           <S.TimeRow key={item.id}>
-            <S.Time>{moment(item.start).format("hh:mm A")}</S.Time>
+            <S.Time>{item.time}</S.Time>
             <S.TimeContent>
-              {item.patient} - {item.type}
+              {item.patientName} - {item.type}
               <S.Actions>
                 <S.ActionBtn
                   onClick={() => {

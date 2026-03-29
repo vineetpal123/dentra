@@ -1,14 +1,6 @@
 import React, { useMemo, useState } from "react";
 import {
   Box,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableSortLabel,
   TextField,
   IconButton,
   Dialog,
@@ -22,9 +14,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch } from "react-redux";
 import { deleteAppointmentRequest } from "../store/appointments/slice";
+import DataTable, { DataColumn } from "./DataTable";
 
 export type Appointment = {
-  id: string;
+  id: number;
   patient: string;
   doctor: string;
   date: string; // YYYY-MM-DD
@@ -96,9 +89,40 @@ const AppointmentTable: React.FC<Props> = ({ appointments, onEdit }) => {
     setOrderBy(property);
   };
 
+  const columns: DataColumn<Appointment>[] = [
+    { key: "patient", label: "Patient", sortable: false },
+    { key: "doctor", label: "Doctor", sortable: false },
+    {
+      key: "date",
+      label: "Date",
+      sortable: true,
+      render: (row) => row.date,
+    },
+    {
+      key: "time",
+      label: "Time",
+      sortable: true,
+      render: (row) => row.time,
+    },
+    {
+      key: "id",
+      label: "Action",
+      align: "center",
+      render: (row) => (
+        <>
+          <IconButton color="primary" onClick={() => onEdit(row)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton color="error" onClick={() => handleDeleteClick(row)}>
+            <DeleteIcon />
+          </IconButton>
+        </>
+      ),
+    },
+  ];
+
   return (
     <Box>
-      {/* 🔍 Search */}
       <TextField
         fullWidth
         size="small"
@@ -108,71 +132,20 @@ const AppointmentTable: React.FC<Props> = ({ appointments, onEdit }) => {
         sx={{ mb: 2 }}
       />
 
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Patient</TableCell>
-              <TableCell>Doctor</TableCell>
+      <DataTable
+        data={sortedAppointments}
+        columns={columns}
+        sortBy={orderBy}
+        sortOrder={order}
+        onSortChange={(key) => {
+          const keyAsString = String(key);
+          if (keyAsString === "date" || keyAsString === "time") {
+            handleSort(keyAsString as "date" | "time");
+          }
+        }}
+        rowKey={(row) => row.id}
+      />
 
-              <TableCell sortDirection={orderBy === "date" ? order : false}>
-                <TableSortLabel
-                  active={orderBy === "date"}
-                  direction={orderBy === "date" ? order : "asc"}
-                  onClick={() => handleSort("date")}
-                >
-                  Date
-                </TableSortLabel>
-              </TableCell>
-
-              <TableCell sortDirection={orderBy === "time" ? order : false}>
-                <TableSortLabel
-                  active={orderBy === "time"}
-                  direction={orderBy === "time" ? order : "asc"}
-                  onClick={() => handleSort("time")}
-                >
-                  Time
-                </TableSortLabel>
-              </TableCell>
-
-              <TableCell align="center">Action</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {sortedAppointments.length === 0 && (
-              <TableRow>
-                <TableCell colSpan={5} align="center">
-                  No appointments found
-                </TableCell>
-              </TableRow>
-            )}
-
-            {sortedAppointments.map((appt) => (
-              <TableRow key={appt.id}>
-                <TableCell>{appt.patient}</TableCell>
-                <TableCell>{appt.doctor}</TableCell>
-                <TableCell>{appt.date}</TableCell>
-                <TableCell>{appt.time}</TableCell>
-                <TableCell align="center">
-                  <IconButton color="primary" onClick={() => onEdit(appt)}>
-                    <EditIcon />
-                  </IconButton>
-
-                  <IconButton
-                    color="error"
-                    onClick={() => handleDeleteClick(appt)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* 🗑 Delete Confirmation Dialog */}
       <Dialog open={!!deleteTarget} onClose={handleDeleteCancel}>
         <DialogTitle>Delete Appointment</DialogTitle>
 
