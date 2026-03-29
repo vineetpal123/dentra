@@ -75,7 +75,7 @@ const Sidebar = () => {
 
         <MenuItem to="/business-hours">
           <Clock size={18} />
-          Schedule
+          Business Hours
         </MenuItem>
 
         <MenuItem to="/settings">

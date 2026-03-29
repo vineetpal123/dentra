@@ -307,6 +307,48 @@ axiosInstance.interceptors.response.use(
         };
         console.log("Returning mock response for patients:", mockResponse);
         return Promise.resolve(mockResponse);
+      } else if (path === "/business-hours") {
+        const mockResponse = {
+          data: [
+            {
+              day: "Monday",
+              isClosed: false,
+              slots: [{ startTime: "08:00", endTime: "17:00" }],
+            },
+            {
+              day: "Tuesday",
+              isClosed: false,
+              slots: [{ startTime: "08:00", endTime: "17:00" }],
+            },
+            {
+              day: "Wednesday",
+              isClosed: false,
+              slots: [{ startTime: "08:00", endTime: "13:00" }],
+            },
+            {
+              day: "Thursday",
+              isClosed: false,
+              slots: [{ startTime: "09:00", endTime: "18:00" }],
+            },
+            {
+              day: "Friday",
+              isClosed: false,
+              slots: [{ startTime: "09:00", endTime: "15:00" }],
+            },
+            { day: "Saturday", isClosed: true, slots: [] },
+            { day: "Sunday", isClosed: true, slots: [] },
+          ],
+          status: 200,
+          statusText: "OK",
+          headers: error.response?.headers || {},
+          config: error.config,
+          request: error.request,
+        };
+        console.log(
+          "Returning mock response for business hours:",
+          mockResponse,
+        );
+        return Promise.resolve(mockResponse);
       }
     }
     return Promise.reject(error);

@@ -21,6 +21,13 @@ const API_ENDPOINTS = {
     UPDATE: (id: number | string) => `${BASE_URL}/patients/${id}`,
     DELETE: (id: number | string) => `${BASE_URL}/patients/${id}`,
   },
+  BUSINESS_HOURS: {
+    GET_ALL: `${BASE_URL}/business-hours`,
+    GET_BY_ID: (id: number | string) => `${BASE_URL}/business-hours/${id}`,
+    CREATE: `${BASE_URL}/business-hours`,
+    UPDATE: (id: number | string) => `${BASE_URL}/business-hours/${id}`,
+    DELETE: (id: number | string) => `${BASE_URL}/business-hours/${id}`,
+  },
 };
 
 export default API_ENDPOINTS;
