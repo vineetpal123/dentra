@@ -1,5 +1,10 @@
-import { call, put, takeLatest, all } from "redux-saga/effects";
-import * as api from "../../api/appointmentApi";
+import { call, put, takeLatest, all, select } from "redux-saga/effects";
+import {
+  GET_REQUEST,
+  POST_REQUEST,
+  PUT_REQUEST,
+  DELETE_REQUEST,
+} from "../../services/apiHelper";
 import {
   fetchAppointmentsRequest,
   fetchAppointmentsSuccess,
@@ -17,9 +22,7 @@ import {
 } from "./slice";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { Appointment } from "./slice";
-import { http } from "../../services/http";
-import { API_ENDPOINTS } from "../../config/apiConfig";
-import { select } from "redux-saga/effects";
+import API_ENDPOINTS from "../../services/apiEndPoint";
 import { selectAppointments } from "./selectors";
 import {
   isOverlapping,
@@ -29,12 +32,12 @@ import {
 function* fetchAppointmentsSaga() {
   try {
     const response: { data: Appointment[] } = yield call(
-      http.get,
-      API_ENDPOINTS.APPOINTMENTS,
+      GET_REQUEST,
+      API_ENDPOINTS.APPOINTMENTS.GET_ALL,
     );
 
     yield put(fetchAppointmentsSuccess(response.data));
-  } catch (error) {
+  } catch (error: any) {
     yield put(fetchAppointmentsFailure("Unable to fetch appointments"));
     yield put(
       showSnackbar({
@@ -76,8 +79,8 @@ function* addAppointmentSaga(action: PayloadAction<Appointment>) {
 
     console.log("payload", action.payload);
     const response: { data: Appointment } = yield call(
-      http.post,
-      API_ENDPOINTS.APPOINTMENTS,
+      POST_REQUEST,
+      API_ENDPOINTS.APPOINTMENTS.CREATE,
       action.payload,
     );
     console.log("response", response);
@@ -90,7 +93,7 @@ function* addAppointmentSaga(action: PayloadAction<Appointment>) {
         severity: "success",
       }),
     );
-  } catch (error) {
+  } catch (error: any) {
     console.log("error-------", error);
     yield put(addAppointmentFailure("Failed to add appointment"));
     yield put(
@@ -130,8 +133,8 @@ function* updateAppointmentSaga(action: PayloadAction<Appointment>) {
       return;
     }
     const response: { data: Appointment } = yield call(
-      http.put,
-      `${API_ENDPOINTS.APPOINTMENTS}/${action.payload.id}`,
+      PUT_REQUEST,
+      API_ENDPOINTS.APPOINTMENTS.UPDATE(action.payload.id),
       action.payload,
     );
 
@@ -142,15 +145,24 @@ function* updateAppointmentSaga(action: PayloadAction<Appointment>) {
         severity: "success",
       }),
     );
-  } catch (error) {
+  } catch (error: any) {
     yield put(updateAppointmentFailure("Failed to update appointment"));
+    yield put(
+      showSnackbar({
+        message: error?.message || "Failed to update appointment",
+        severity: "error",
+      }),
+    );
   }
 }
 
 function* deleteAppointmentSaga(action: PayloadAction<number>) {
   try {
     alert("Deleting appointment with ID: " + action.payload);
-    yield call(api.deleteAppointment, action.payload);
+    yield call(
+      DELETE_REQUEST,
+      API_ENDPOINTS.APPOINTMENTS.DELETE(action.payload),
+    );
     yield put(deleteAppointmentSuccess(action.payload));
 
     yield put(
@@ -162,7 +174,9 @@ function* deleteAppointmentSaga(action: PayloadAction<number>) {
 
     yield put(fetchAppointmentsRequest());
   } catch (error: any) {
-    yield put(deleteAppointmentFailure(error.message));
+    yield put(
+      deleteAppointmentFailure(error.message || "Failed to delete appointment"),
+    );
   }
 }
 
