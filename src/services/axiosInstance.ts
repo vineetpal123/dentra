@@ -349,6 +349,24 @@ axiosInstance.interceptors.response.use(
           mockResponse,
         );
         return Promise.resolve(mockResponse);
+      } else if (path === "/settings") {
+        const mockResponse = {
+          data: {
+            clinicName: "Dentra Clinic",
+            email: "clinic@gmail.com",
+            phone: "9999999999",
+            address: "Bangalore",
+            profileImage: "",
+            notifications: true,
+          },
+          status: 200,
+          statusText: "OK",
+          headers: error.response?.headers || {},
+          config: error.config,
+          request: error.request,
+        };
+        console.log("Returning mock response for settings:", mockResponse);
+        return Promise.resolve(mockResponse);
       }
     }
     return Promise.reject(error);

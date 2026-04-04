@@ -37,53 +37,49 @@ const Patients = () => {
   );
 
   return (
-    <Container>
-      <Content>
-        <Header>
-          <Title>Patients</Title>
-          <AddButton onClick={() => setModalOpen(true)}>
-            + Add Patient
-          </AddButton>
-        </Header>
+    <>
+      <Header>
+        <Title>Patients</Title>
+        <AddButton onClick={() => setModalOpen(true)}>+ Add Patient</AddButton>
+      </Header>
 
-        <SearchWrapper>
-          <SearchInput
-            placeholder="Search patients..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </SearchWrapper>
+      <SearchWrapper>
+        <SearchInput
+          placeholder="Search patients..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </SearchWrapper>
 
-        <TableCard>
-          <PatientTable
-            patients={filtered}
-            onEdit={(patient) => {
-              setEditing(patient);
-              setModalOpen(true);
-            }}
-            onDelete={(id) => {
-              // Implement delete via dispatch if needed
-              console.log("Delete patient", id);
-            }}
-          />
-        </TableCard>
-        {modalOpen && (
-          <PatientModal
-            onClose={() => {
-              setModalOpen(false);
-              setEditing(null);
-            }}
-            onSave={(data: Patient) => {
-              alert(JSON.stringify(data));
-              //if (editing) dispatch(updatePatient(data));
-              //else dispatch(addPatient(data));
-              setModalOpen(false);
-            }}
-            initialData={editing}
-          />
-        )}
-      </Content>
-    </Container>
+      <TableCard>
+        <PatientTable
+          patients={filtered}
+          onEdit={(patient) => {
+            setEditing(patient);
+            setModalOpen(true);
+          }}
+          onDelete={(id) => {
+            // Implement delete via dispatch if needed
+            console.log("Delete patient", id);
+          }}
+        />
+      </TableCard>
+      {modalOpen && (
+        <PatientModal
+          onClose={() => {
+            setModalOpen(false);
+            setEditing(null);
+          }}
+          onSave={(data: Patient) => {
+            alert(JSON.stringify(data));
+            //if (editing) dispatch(updatePatient(data));
+            //else dispatch(addPatient(data));
+            setModalOpen(false);
+          }}
+          initialData={editing}
+        />
+      )}
+    </>
   );
 };
 const PatientModal = ({ onClose, onSave, initialData }: any) => {

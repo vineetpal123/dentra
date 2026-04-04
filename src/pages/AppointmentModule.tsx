@@ -41,11 +41,10 @@ export default function AppointmentModule() {
           <ToggleButton value="calendar">Calendar</ToggleButton>
           <ToggleButton value="table">Table</ToggleButton>
         </ToggleButtonGroup>
-        <Typography variant="h5">Appointment Management</Typography>
 
         <Stack direction="row" spacing={2} alignItems="center">
-          <Typography>Dark Mode</Typography>
-          <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} />
+          {/* <Typography>Dark Mode</Typography>
+          <Switch checked={darkMode} onChange={() => setDarkMode(!darkMode)} /> */}
 
           <Button
             variant="contained"

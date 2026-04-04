@@ -4,7 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Appointments from "./pages/AppointmentModule";
 import Patients from "./pages/Patients";
 import BusinessHours from "./pages/BusinessHours";
-// import Settings from "../pages/Settings";
+import Settings from "./pages/Settings";
 import MainLayout from "./layout/MainLayout";
 
 const AppRoutes = () => {
@@ -17,8 +17,8 @@ const AppRoutes = () => {
           <Route path="/patients" element={<Patients />} />
 
           <Route path="/business-hours" element={<BusinessHours />} />
-          {/*
-          <Route path="/settings" element={<Settings />} /> */}
+
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>
     </BrowserRouter>

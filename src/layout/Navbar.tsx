@@ -1,16 +1,6 @@
 import styled from "styled-components";
 import { Bell } from "lucide-react";
 
-const Nav = styled.div`
-  height: 64px;
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  border-bottom: 1px solid #e2e8f0;
-`;
-
 const Search = styled.input`
   width: 320px;
   padding: 10px 14px;
@@ -56,7 +46,7 @@ const Avatar = styled.div`
 
 const Navbar = () => {
   return (
-    <Nav>
+    <>
       <Search placeholder="Search patients or appointments..." />
 
       <RightSection>
@@ -65,7 +55,7 @@ const Navbar = () => {
         </IconWrapper>
         <Avatar />
       </RightSection>
-    </Nav>
+    </>
   );
 };
 
