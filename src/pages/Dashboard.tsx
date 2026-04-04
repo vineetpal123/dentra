@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { fetchDashboardRequest } from "../store/dashboard/slice";
 import { selectDashboardData } from "../store/dashboard/selectors";
+import { Container } from "./index.styled";
 
 const localizer = momentLocalizer(moment);
 
@@ -43,7 +44,7 @@ const Dashboard = () => {
   const [openForm, setOpenForm] = useState(false);
 
   return (
-    <S.Container>
+    <>
       <S.HeaderRow>
         <S.Title>Dashboard</S.Title>
         <S.AddBtn onClick={() => setOpenForm(true)}>+ New Appointment</S.AddBtn>
@@ -141,7 +142,7 @@ const Dashboard = () => {
         open={openForm}
         onClose={() => setOpenForm(false)}
       />
-    </S.Container>
+    </>
   );
 };
 

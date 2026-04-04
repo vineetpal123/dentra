@@ -1,15 +1,6 @@
 import styled from "styled-components";
 
-export const Container = styled.div`
-  //padding: 24px 32px;
-  background: #f5f7fb;
-  min-height: 100%;
-`;
-
-export const Content = styled.div`
-  width: 100%;
-  max-width: 1200px; /* 🔥 key fix */
-`;
+export const Content = styled.div``;
 
 export const Header = styled.div`
   display: flex;
@@ -83,14 +74,11 @@ export const SearchInput = styled.input`
 `;
 
 export const TableCard = styled.div`
-  background: #ffffff;
   border-radius: 12px;
   padding: 8px 0;
-  width: 100%;
 `;
 
 export const Table = styled.table`
-  width: 100%;
   border-collapse: collapse;
 `;
 

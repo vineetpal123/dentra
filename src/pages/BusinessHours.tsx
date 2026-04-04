@@ -19,7 +19,6 @@ const Card = styled.div`
   background: #fff;
   border-radius: 12px;
   padding: 16px;
-  width: 600px;
 `;
 
 const Row = styled.div`
@@ -137,7 +136,7 @@ const BusinessHours = () => {
   };
 
   return (
-    <Container>
+    <>
       <Title>Business Hours</Title>
 
       <Card>
@@ -180,7 +179,7 @@ const BusinessHours = () => {
 
         <SaveButton onClick={handleSave}>Save Changes</SaveButton>
       </Card>
-    </Container>
+    </>
   );
 };
 

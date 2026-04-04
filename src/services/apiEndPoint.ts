@@ -28,6 +28,10 @@ const API_ENDPOINTS = {
     UPDATE: (id: number | string) => `${BASE_URL}/business-hours/${id}`,
     DELETE: (id: number | string) => `${BASE_URL}/business-hours/${id}`,
   },
+  SETTINGS: {
+    GET: `${BASE_URL}/settings`,
+    UPDATE: `${BASE_URL}/settings`,
+  },
 };
 
 export default API_ENDPOINTS;

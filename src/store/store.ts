@@ -11,12 +11,16 @@ import { all } from "redux-saga/effects";
 import businessHoursSaga from "./businessHours/saga";
 import businessHoursReducer from "./businessHours/slice";
 
+import settingsSaga from "./settings/saga";
+import settingsReducer from "./settings/slice";
+
 function* rootSaga() {
   yield all([
     appointmentSaga(),
     dashboardSaga(),
     patientSaga(),
     businessHoursSaga(),
+    settingsSaga(),
   ]);
 }
 
@@ -28,6 +32,7 @@ export const store = configureStore({
     dashboard: dashboardReducer,
     patients: patientReducer,
     businessHours: businessHoursReducer,
+    settings: settingsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
