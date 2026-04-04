@@ -1,11 +1,9 @@
-import { Backdrop, CircularProgress } from '@mui/material';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store/store';
+import { Backdrop, CircularProgress } from "@mui/material";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 export default function GlobalLoader() {
-  const loading = useSelector(
-    (state: RootState) => state.appointments.loading
-  );
+  const loading = useSelector((state: RootState) => state.global.loading);
 
   return (
     <Backdrop open={loading} sx={{ zIndex: 1300 }}>
