@@ -35,23 +35,10 @@ function* handleLogin(action: any): any {
     yield put(showLoader());
     const { mobile, otp } = action.payload;
 
-    // const response: AxiosResponse = yield call(
-    //   POST_REQUEST,
-    //   API_ENDPOINTS.AUTH.LOGIN,
-    //   { mobile, otp },
-    // );
-
-    yield delay(2000); // Simulate network delay
-
-    const response = {
-      data: {
-        token: 'fake-jwt-token',
-        user: {
-          id: '123',
-          email: 'user@example.com',
-        },
-      },
-    };
+    const response: AxiosResponse = yield call(POST_REQUEST, API_ENDPOINTS.AUTH.LOGIN, {
+      mobile,
+      otp,
+    });
 
     const { token, user } = response.data;
 
