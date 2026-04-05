@@ -1,4 +1,4 @@
-import { call, delay, put, takeEvery } from "redux-saga/effects";
+import { call, delay, put, takeEvery } from 'redux-saga/effects';
 import {
   loginRequest,
   loginSuccess,
@@ -6,25 +6,24 @@ import {
   sentOtpSuccess,
   sendOtpFailure,
   sendOtpRequest,
-} from "./slice";
-import { AxiosResponse } from "axios";
-import axiosInstance from "../../services/axiosInstance";
-import API_ENDPOINTS from "../../services/apiEndPoint";
-import { POST_REQUEST } from "../../services/apiHelper";
-import { hideLoader, showLoader } from "../global/slice";
+} from './slice';
+import { AxiosResponse } from 'axios';
+import axiosInstance from '../../services/axiosInstance';
+import API_ENDPOINTS from '../../services/apiEndPoint';
+import { POST_REQUEST } from '../../services/apiHelper';
+import { hideLoader, showLoader } from '../global/slice';
 
 function* sendOtp(action: any): any {
   try {
     yield put(showLoader());
     const { mobile } = action.payload;
 
-    // yield call(POST_REQUEST, API_ENDPOINTS.AUTH.SEND_OTP, { mobile });
+    yield call(POST_REQUEST, API_ENDPOINTS.AUTH.SEND_OTP, { mobile });
 
-    yield delay(2000); // Simulate network delay
-    console.log("OTP sent to:", mobile);
+    console.log('OTP sent to:', mobile);
     yield put(sentOtpSuccess());
   } catch (error: any) {
-    const errorMessage = error?.response?.data?.message || "Failed to send OTP";
+    const errorMessage = error?.response?.data?.message || 'Failed to send OTP';
     yield put(sendOtpFailure(errorMessage));
   } finally {
     yield put(hideLoader());
@@ -46,10 +45,10 @@ function* handleLogin(action: any): any {
 
     const response = {
       data: {
-        token: "fake-jwt-token",
+        token: 'fake-jwt-token',
         user: {
-          id: "123",
-          email: "user@example.com",
+          id: '123',
+          email: 'user@example.com',
         },
       },
     };
@@ -58,7 +57,7 @@ function* handleLogin(action: any): any {
 
     yield put(loginSuccess({ token, user }));
   } catch (error: any) {
-    const errorMessage = error?.response?.data?.message || "Login failed";
+    const errorMessage = error?.response?.data?.message || 'Login failed';
     yield put(loginFailure(errorMessage));
   } finally {
     yield put(hideLoader());
