@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { Appointment } from '../store/appointments/slice';
-
-const api = axios.create({ baseURL: 'http://localhost:4000' });
+console.log('env', import.meta.env);
+console.log('env', import.meta.env.VITE_API_BASE_URL);
+const api = axios.create({ baseURL: import.meta.env.VITE_API_BASE_URL });
 
 export const fetchAppointments = () => api.get<Appointment[]>('/appointments');
 export const addAppointment = (data: Appointment) => api.post('/appointments', data);

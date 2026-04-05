@@ -1,9 +1,10 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+console.log('env', import.meta.env);
 
 const API_ENDPOINTS = {
   AUTH: {
     LOGIN: `${BASE_URL}/auth/login`,
-    SEND_OTP: `${BASE_URL}/auth/otp`,
+    SEND_OTP: `${BASE_URL}/auth/send-otp`,
   },
   APPOINTMENTS: {
     GET_ALL: `${BASE_URL}/appointments`,
