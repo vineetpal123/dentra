@@ -4,6 +4,8 @@ export interface Patient {
   id: number;
   name: string;
   phone: string;
+  age: number;
+  gender: string;
   lastVisit: string;
   status: "Active" | "Inactive";
 }
@@ -48,13 +50,31 @@ const patientSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+     updatePatientRequest(state) {
+      state.loading = true;
+      state.error = undefined;
+    },
+     updatePatientSuccess(state, action: PayloadAction<Patient>) {
+          state.loading = false;
+          state.list = state.list.map((p) =>
+            p['_id'] === action.payload['_id'] ? action.payload : p
+          );
+    },
+     updatePatientFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
+      
 
 export const {
   fetchPatientsRequest,
   fetchPatientsSuccess,
   fetchPatientsFailure,
+  updatePatientRequest,
+  updatePatientSuccess,
+  updatePatientFailure,
   addPatientRequest,
   addPatientSuccess,
   addPatientFailure,

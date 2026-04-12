@@ -16,11 +16,11 @@ import { hideLoader, showLoader } from '../global/slice';
 function* sendOtp(action: any): any {
   try {
     yield put(showLoader());
-    const { mobile } = action.payload;
+    const { phone } = action.payload;
 
-    yield call(POST_REQUEST, API_ENDPOINTS.AUTH.SEND_OTP, { mobile });
+    yield call(POST_REQUEST, API_ENDPOINTS.AUTH.SEND_OTP, { phone });
 
-    console.log('OTP sent to:', mobile);
+    console.log('OTP sent to:', phone);
     yield put(sentOtpSuccess());
   } catch (error: any) {
     const errorMessage = error?.response?.data?.message || 'Failed to send OTP';
@@ -33,10 +33,10 @@ function* sendOtp(action: any): any {
 function* handleLogin(action: any): any {
   try {
     yield put(showLoader());
-    const { mobile, otp } = action.payload;
+    const { phone, otp } = action.payload;
 
     const response: AxiosResponse = yield call(POST_REQUEST, API_ENDPOINTS.AUTH.LOGIN, {
-      mobile,
+      phone,
       otp,
     });
 

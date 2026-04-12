@@ -20,7 +20,7 @@ import { Appointment } from './slice';
 import API_ENDPOINTS from '../../services/apiEndPoint';
 import { selectAppointments } from './selectors';
 import { isOverlapping, isWithinBusinessHours } from '../../utils/appointment.utils';
-import { hideLoader, showLoader } from '../global/slice';
+import { hideFormDialog, hideLoader, showLoader } from '../global/slice';
 
 function* fetchAppointmentsSaga() {
   try {
@@ -30,7 +30,9 @@ function* fetchAppointmentsSaga() {
       API_ENDPOINTS.APPOINTMENTS.GET_ALL
     );
 
-    yield put(fetchAppointmentsSuccess(response.data));
+    const { appointments } = response.data || {};
+
+    yield put(fetchAppointmentsSuccess(appointments || []));
   } catch (error: any) {
     yield put(fetchAppointmentsFailure('Unable to fetch appointments'));
     yield put(
@@ -49,34 +51,46 @@ function* addAppointmentSaga(action: PayloadAction<Appointment>) {
     yield put(showLoader());
     const existingAppointments: Appointment[] = yield select(selectAppointments);
 
-    const hasConflict = existingAppointments.some((appt) => isOverlapping(action.payload, appt));
+    // const hasConflict = existingAppointments.some((appt) => isOverlapping(action.payload, appt));
 
-    if (hasConflict) {
-      yield put(
-        showSnackbar({
-          message: 'Doctor already has an appointment at this time',
-          severity: 'error',
-        })
-      );
-      return;
-    }
+    // if (hasConflict) {
+    //   yield put(
+    //     showSnackbar({
+    //       message: 'Doctor already has an appointment at this time',
+    //       severity: 'error',
+    //     })
+    //   );
+    //   return;
+    // }
 
-    if (!isWithinBusinessHours(action.payload.time)) {
-      yield put(
-        showSnackbar({
-          message: `Appointments can only be scheduled between 09:00 and 18:00`,
-          severity: 'error',
-        })
-      );
-      return;
-    }
+    // if (!isWithinBusinessHours(action.payload.time)) {
+    //   yield put(
+    //     showSnackbar({
+    //       message: `Appointments can only be scheduled between 09:00 and 18:00`,
+    //       severity: 'error',
+    //     })
+    //   );
+    //   return;
+    // }
 
-    console.log('payload', action.payload);
+    const body = {
+      patient: {
+        name: action.payload.patientName,
+        phone: action.payload.phone,
+      },
+      doctorId: action?.payload?.doctorId,
+      patientId: action?.payload?.patientId,
+      date: action.payload.date,
+      startTime: action.payload.startTime,
+    };
+
+    console.log('body', body);
     const response: { data: Appointment } = yield call(
       POST_REQUEST,
       API_ENDPOINTS.APPOINTMENTS.CREATE,
-      action.payload
+      body
     );
+
     console.log('response', response);
 
     yield put(addAppointmentSuccess(response.data));
@@ -87,6 +101,7 @@ function* addAppointmentSaga(action: PayloadAction<Appointment>) {
         severity: 'success',
       })
     );
+    yield put(hideFormDialog());
   } catch (error: any) {
     console.log('error-------', error);
     yield put(addAppointmentFailure('Failed to add appointment'));

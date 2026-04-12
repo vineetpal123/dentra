@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface LoginState {
   authToken: string | null;
@@ -11,28 +11,29 @@ export interface LoginState {
   isAuthenticated: boolean;
   loading: boolean;
   error?: string | null;
-  step: "mobile" | "otp";
+  step: 'phone' | 'otp';
 }
 
 const initialState: LoginState = {
-  authToken: "",
+  authToken:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGJhZDhkNWFmNWYyY2E3ZGY0ZTdkZSIsInRlbmFudElkIjoiNjlkYmFkOGQ1YWY1ZjJjYTdkZjRlN2RkIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc2MDA0NDk0LCJleHAiOjE3NzY2MDkyOTR9.jcf5OJ1eJdONmUDrzgfrvg_668JNfeUE0_r5AUhxgPg',
   user: {},
-  isAuthenticated: false,
+  isAuthenticated: true,
   loading: false,
   error: null,
-  step: "mobile",
+  step: 'phone',
 };
 
 const loginSlice = createSlice({
-  name: "login",
+  name: 'login',
   initialState,
   reducers: {
-    sendOtpRequest(state, action: PayloadAction<{ mobile: string }>) {
+    sendOtpRequest(state, action: PayloadAction<{ phone: string }>) {
       state.loading = true;
       state.error = null;
     },
     sentOtpSuccess(state) {
-      state.step = "otp";
+      state.step = 'otp';
       state.loading = false;
       state.error = null;
     },
@@ -40,10 +41,7 @@ const loginSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    loginRequest(
-      state,
-      action: PayloadAction<{ email: string; password: string }>,
-    ) {
+    loginRequest(state, action: PayloadAction<{ email: string; password: string }>) {
       state.loading = true;
       state.error = null;
     },
@@ -53,8 +51,8 @@ const loginSlice = createSlice({
       state.isAuthenticated = true;
       state.loading = false;
       state.error = null;
-      localStorage.setItem("authToken", action.payload.token);
-      localStorage.setItem("user", JSON.stringify(action.payload.user));
+      localStorage.setItem('authToken', action.payload.token);
+      localStorage.setItem('user', JSON.stringify(action.payload.user));
     },
     loginFailure(state, action: PayloadAction<string>) {
       state.loading = false;
@@ -68,12 +66,12 @@ const loginSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       state.error = null;
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("user");
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
     },
     setUser(state, action: PayloadAction<any>) {
       state.user = action.payload;
-      localStorage.setItem("user", JSON.stringify(action.payload));
+      localStorage.setItem('user', JSON.stringify(action.payload));
     },
   },
 });

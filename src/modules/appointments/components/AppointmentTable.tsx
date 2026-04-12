@@ -13,15 +13,17 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch } from 'react-redux';
-import { deleteAppointmentRequest } from '../store/appointments/slice';
-import DataTable, { DataColumn } from './DataTable';
+import { deleteAppointmentRequest } from '../../../store/appointments/slice';
+import DataTable, { DataColumn } from '../../../components/DataTable';
 
 export type Appointment = {
   id: number;
   patient: string;
   doctor: string;
+  phone: string;
   date: string; // YYYY-MM-DD
   time: string; // HH:mm
+  status: string;
 };
 
 type Order = 'asc' | 'desc';
@@ -92,6 +94,7 @@ const AppointmentTable: React.FC<Props> = ({ appointments, onEdit }) => {
 
   const columns: DataColumn<Appointment>[] = [
     { key: 'patient', label: 'Patient', sortable: false },
+    { key: 'phone', label: 'Patient Phone', sortable: false },
     { key: 'doctor', label: 'Doctor', sortable: false },
     {
       key: 'date',
@@ -103,8 +106,9 @@ const AppointmentTable: React.FC<Props> = ({ appointments, onEdit }) => {
       key: 'time',
       label: 'Time',
       sortable: true,
-      render: (row) => row.time,
+      render: (row) => row.startTime,
     },
+    { key: 'status', label: 'Status', sortable: false },
     {
       key: 'id',
       label: 'Action',

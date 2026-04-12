@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface Appointment {
   id: number;
@@ -6,7 +6,7 @@ export interface Appointment {
   doctor: string;
   date: string;
   time: string;
-  status: "Pending" | "Confirmed" | "Cancelled";
+  status: 'Pending' | 'Confirmed' | 'Cancelled';
 }
 
 export interface SnackbarPayload {
@@ -31,7 +31,7 @@ const initialState: AppointmentState = {
 };
 
 const appointmentSlice = createSlice({
-  name: "appointments",
+  name: 'appointments',
   initialState,
   reducers: {
     fetchAppointmentsRequest(state) {
@@ -69,15 +69,13 @@ const appointmentSlice = createSlice({
     },
     deleteAppointmentSuccess(state, action: PayloadAction<number>) {
       state.loading = false;
-      state.appointments = state.appointments.filter(
-        (a) => a.id !== action.payload,
-      );
-      state.successMessage = "Appointment deleted successfully";
+      state.appointments = state.appointments.filter((a) => a.id !== action.payload);
+      state.successMessage = 'Appointment deleted successfully';
     },
     deleteAppointmentFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
-      state.successMessage = "Failed to delete appointment";
+      state.successMessage = 'Failed to delete appointment';
     },
     updateAppointmentRequest(state, _action: PayloadAction<Appointment>) {
       state.loading = true;
@@ -85,9 +83,9 @@ const appointmentSlice = createSlice({
     updateAppointmentSuccess(state, action: PayloadAction<Appointment>) {
       state.loading = false;
       state.appointments = state.appointments.map((a) =>
-        a.id === action.payload.id ? action.payload : a,
+        a.id === action.payload.id ? action.payload : a
       );
-      state.successMessage = "Appointment updated successfully";
+      state.successMessage = 'Appointment updated successfully';
     },
     setSelectedAppointment(state, action: PayloadAction<Appointment | null>) {
       state.selectedAppointment = action.payload;
@@ -97,7 +95,7 @@ const appointmentSlice = createSlice({
       state.successMessage = null;
     },
     showSnackbar(state, action: PayloadAction<SnackbarPayload>) {
-      if (action.payload.severity === "error") {
+      if (action.payload.severity === 'error') {
         state.error = action.payload.message;
       } else {
         state.successMessage = action.payload.message;

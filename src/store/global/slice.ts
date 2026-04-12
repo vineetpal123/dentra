@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface SnackbarPayload {
   message: string;
@@ -10,6 +10,7 @@ export interface GlobalState {
   error?: string | null;
   snackbar?: SnackbarPayload | null;
   successMessage: string | null;
+  formDialog: any;
 }
 
 const initialState: GlobalState = {
@@ -17,10 +18,18 @@ const initialState: GlobalState = {
   error: null,
   snackbar: null,
   successMessage: null,
+  formDialog: {
+    open: false,
+    onClose: () => {},
+    title: '',
+    fields: [],
+    initialValues: {},
+    onSubmit: () => {},
+  },
 };
 
 const globalSlice = createSlice({
-  name: "global",
+  name: 'global',
   initialState,
   reducers: {
     showLoader(state) {
@@ -31,22 +40,23 @@ const globalSlice = createSlice({
       state.loading = false;
       state.error = undefined;
     },
-
     showSnackbar(state, action: PayloadAction<SnackbarPayload>) {
-      if (action.payload.severity === "error") {
+      if (action.payload.severity === 'error') {
         state.error = action.payload.message;
       } else {
         state.successMessage = action.payload.message;
       }
     },
+    showFormDialog(state, action: PayloadAction<any>) {
+      state.formDialog = { ...state.formDialog, ...action.payload };
+    },
+    hideFormDialog(state) {
+      state.formDialog = initialState.formDialog;
+    },
   },
 });
 
-export const {
-  showLoader,
-  hideLoader,
-
-  showSnackbar,
-} = globalSlice.actions;
+export const { showLoader, hideLoader, showSnackbar, showFormDialog, hideFormDialog } =
+  globalSlice.actions;
 
 export default globalSlice.reducer;

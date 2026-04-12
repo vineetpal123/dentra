@@ -7,17 +7,20 @@ import interactionPlugin from '@fullcalendar/interaction';
 // import '@fullcalendar/timegrid/main.css';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAppointments } from '../store/appointments/selectors';
+import { selectAppointments } from '../../../store/appointments/selectors';
 import {
   fetchAppointmentsRequest,
   setSelectedAppointment,
+  showSnackbar,
   updateAppointmentRequest,
-} from '../store/appointments/slice';
+} from '../../../store/appointments/slice';
 import { useEffect } from 'react';
 import { DateSelectArg, EventDropArg } from '@fullcalendar/core/index.js';
+import { Appointment } from './AppointmentTable';
+import { isWithinBusinessHours } from '../../../utils/appointment.utils';
 
 interface Props {
-  onEdit: () => void;
+  onEdit: (appointment: Appointment) => void;
 }
 
 export default function AppointmentCalendar({ onEdit }: Props) {
@@ -34,11 +37,13 @@ export default function AppointmentCalendar({ onEdit }: Props) {
 
   const events = appointments.map((appt) => ({
     id: appt.id,
-    title: `${appt.patient} - ${appt.doctor}`,
-    start: `${appt.date}T${appt.time}`,
+    title: `${appt.patient} - ${appt.doctor || 'No Doctor'}`,
+    status: `${appt.status}`,
+    start: `${appt.date}T${appt.startTime}`,
     extendedProps: {
       patient: appt.patient,
       doctor: appt.doctor,
+      status: appt.status,
     },
   }));
 

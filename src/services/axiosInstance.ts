@@ -10,11 +10,11 @@ const axiosInstance = axios.create({
 
 // Request interceptor
 axiosInstance.interceptors.request.use((config) => {
-  console.log('Request Interceptor - Config:', store.getState());
+  // console.log('Request Interceptor - Config:', store.getState());
   const tokenFromStore = store.getState().login.authToken;
-  console.log('Request Interceptor - Token from Store:', tokenFromStore);
+  //console.log('Request Interceptor - Token from Store:', tokenFromStore);
   const tokenFromLocalStorage = localStorage.getItem('authToken');
-  console.log('Request Interceptor - Token from tokenFromLocalStorage:', tokenFromLocalStorage);
+  //console.log('Request Interceptor - Token from tokenFromLocalStorage:', tokenFromLocalStorage);
   const token = tokenFromStore || tokenFromLocalStorage || undefined;
 
   if (token) {
