@@ -23,6 +23,7 @@ const API_ENDPOINTS = {
     CREATE: `${BASE_URL}${PREFIX}/patients`,
     UPDATE: (id: number | string) => `${BASE_URL}${PREFIX}/patients/${id}`,
     DELETE: (id: number | string) => `${BASE_URL}${PREFIX}/patients/${id}`,
+    IDENTIFY: `${BASE_URL}${PREFIX}/patients/identify`, // New endpoint for identify  
   },
   BUSINESS_HOURS: {
     GET_ALL: `${BASE_URL}${PREFIX}/business-hours`,

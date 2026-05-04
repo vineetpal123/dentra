@@ -10,6 +10,9 @@ import {
   updatePatientRequest,
   updatePatientSuccess,
   updatePatientFailure,
+  identifyPatientSuccess,
+  identifyPatientFailure,
+  identifyPatientRequest,
 } from './slice';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { Patient } from './slice';
@@ -115,10 +118,51 @@ function* updatePatientSaga(action: PayloadAction<Patient>) {
   }
 }
 
+function* identifyPatientSaga(action: PayloadAction<string>) {
+  try {
+    const phone = action.payload;
+
+    yield put(showLoader());
+
+    // 🔥 check cache first
+    const cache: Record<string, Patient | null> = yield select(
+      (state) => state.patients.patientCache
+    );
+
+    if (cache[phone] !== undefined) {
+      yield put(
+        identifyPatientSuccess({
+          phone,
+          patient: cache[phone],
+        })
+      );
+      return;
+    }
+
+    const response: { data: { patient: Patient | null } } = yield call(
+      POST_REQUEST,
+      API_ENDPOINTS.PATIENTS.IDENTIFY,
+      { phone }
+    );
+
+    yield put(
+      identifyPatientSuccess({
+        phone,
+        patient: response.data.patient,
+      })
+    );
+  } catch (error: any) {
+    yield put(identifyPatientFailure("Failed to identify patient"));
+  } finally {
+    yield put(hideLoader());
+  }
+}
+
 export default function* patientSaga() {
   yield all([
     takeLatest(fetchPatientsRequest.type, fetchPatientsSaga),
     takeLatest(addPatientRequest.type, addPatientSaga),
     takeLatest(updatePatientRequest.type, updatePatientSaga),
+    takeLatest(identifyPatientRequest.type, identifyPatientSaga),
   ]);
 }

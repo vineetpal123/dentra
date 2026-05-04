@@ -16,7 +16,7 @@ export interface LoginState {
 
 const initialState: LoginState = {
   authToken:
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZGJhZDhkNWFmNWYyY2E3ZGY0ZTdkZSIsInRlbmFudElkIjoiNjlkYmFkOGQ1YWY1ZjJjYTdkZjRlN2RkIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzc2MDA0NDk0LCJleHAiOjE3NzY2MDkyOTR9.jcf5OJ1eJdONmUDrzgfrvg_668JNfeUE0_r5AUhxgPg',
+    'aa',
   user: {},
   isAuthenticated: true,
   loading: false,
