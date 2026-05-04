@@ -15,6 +15,7 @@ import { fetchPatientsRequest, Patient } from '../../../store/patients/slice';
 import { selectPatients } from '../../../store/patients/selectors';
 import { usePatients } from '../hooks/usePatients';
 import { Button } from '@mui/material';
+import PatientSelector from '../components/PatientSelector';
 
 const Patients = () => {
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const Patients = () => {
   console.log('patient list from selector:', list);
 
   const [search, setSearch] = useState('');
+   const [open, setOpen] = useState(false)
 
   const filtered = list.filter((p: Patient) => p.name.toLowerCase().includes(search.toLowerCase()));
 
@@ -38,6 +40,10 @@ const Patients = () => {
         <Button variant="contained" onClick={() => openForm('create')}>
           Add Patient
         </Button>
+
+          <button onClick={() => setOpen(true)}>
+        + Create Patient
+      </button>
       </Header>
 
       <SearchWrapper>
@@ -58,6 +64,26 @@ const Patients = () => {
           }}
         />
       </TableCard>
+
+       {open && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Create Patient</h2>
+
+            <PatientSelector
+              onSelect={(patient) => {
+                // 🔥 key difference here
+                alert(`Patient already exists: ${patient.name}`)
+                setOpen(false)
+              }}
+            />
+
+            <button onClick={() => setOpen(false)}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };

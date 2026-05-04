@@ -1,101 +1,129 @@
-// components/PatientSelector.tsx
-
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
+
 import {
-  checkPatientRequest,
-  createPatientRequest
-} from "../store/patient/actions"
-import { RootState } from "../store"
-import { Patient } from "../types/patient"
+  identifyPatientRequest,
+  addPatientRequest,
+} from "../../../store/patients/slice"
+
+import {
+  selectIdentifiedPatient,
+  selectIsNewPatient,
+  selectIdentifyLoading,
+} from "../../../store/patients/selectors"
+
+import { Patient } from "../../../store/patients/slice"
 
 interface Props {
-  onSelect: (patient: Patient) => void
+  onSelect?: (patient: Patient) => void
+  mode?: "select" | "create" // select = appointment, create = patient page
 }
 
-const PatientSelector: React.FC<Props> = ({ onSelect }) => {
+const PatientSelector: React.FC<Props> = ({
+  onSelect,
+  mode = "select",
+}) => {
   const dispatch = useDispatch()
 
-  const { loading, patient, isNew, creating } = useSelector(
-    (state: RootState) => state.patient
-  )
+  const identifiedPatient = useSelector(selectIdentifiedPatient)
+  const isNewPatient = useSelector(selectIsNewPatient)
+  const loading = useSelector(selectIdentifyLoading)
 
   const [phone, setPhone] = useState("")
   const [form, setForm] = useState({
     name: "",
     age: "",
-    gender: ""
+    gender: "",
   })
 
-  // 🔍 Auto detect
-  const handleCheck = () => {
+  // 🔍 Auto detect (debounce)
+  useEffect(() => {
     if (phone.length === 10) {
-      dispatch(checkPatientRequest(phone))
-    }
-  }
+      const timer = setTimeout(() => {
+        dispatch(identifyPatientRequest(phone))
+      }, 400)
 
-  // ✅ Select existing
-  const handleSelect = () => {
-    if (patient) {
-      onSelect(patient)
+      return () => clearTimeout(timer)
     }
-  }
+  }, [phone])
 
-  // 💾 Create new
+  // ✅ Auto select after creation or existing
+  useEffect(() => {
+    if (
+      mode === "select" &&
+      identifiedPatient &&
+      isNewPatient === false &&
+      onSelect
+    ) {
+      onSelect(identifiedPatient)
+    }
+  }, [identifiedPatient, isNewPatient])
+
+  // 💾 Create new patient
   const handleCreate = () => {
     dispatch(
-      createPatientRequest({
-        phone,
+      addPatientRequest({
         name: form.name,
+        phone,
         age: Number(form.age),
-        gender: form.gender as any
-      })
+        gender: form.gender,
+        lastVisit: "",
+        status: "Active",
+      } as Patient)
     )
   }
 
-  // 🧠 Auto select after creation (optional improvement)
-  React.useEffect(() => {
-    if (!creating && patient && isNew === false) {
-      onSelect(patient)
-    }
-  }, [creating])
-
   return (
-    <div className="p-4 border rounded">
-      <h3>Select Patient</h3>
+    <div className="p-4 border rounded w-full max-w-md">
+      <h3 className="font-semibold mb-2">
+        {mode === "select" ? "Select Patient" : "Create Patient"}
+      </h3>
 
       {/* PHONE INPUT */}
-      <div style={{ display: "flex", gap: "10px" }}>
+      <div className="mb-3">
+        <label className="block text-sm">Phone Number</label>
         <input
-          placeholder="Enter phone number"
+          className="border p-2 w-full rounded"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          placeholder="Enter 10 digit phone"
         />
-        <button onClick={handleCheck}>Check</button>
       </div>
 
       {/* LOADING */}
-      {loading && <p>Checking patient...</p>}
+      {loading && <p className="text-sm">Checking patient...</p>}
 
       {/* EXISTING PATIENT */}
-      {isNew === false && patient && (
-        <div className="mt-3 p-3 border bg-green-50">
-          <p>✅ Existing Patient</p>
-          <p><strong>{patient.name}</strong></p>
-          <p>{patient.phone}</p>
+      {isNewPatient === false && identifiedPatient && (
+        <div className="p-3 border bg-green-50 rounded">
+          <p className="text-green-700 font-medium">
+            ✅ Patient already exists
+          </p>
+          <p>{identifiedPatient.name}</p>
+          <p>{identifiedPatient.phone}</p>
 
-          <button onClick={handleSelect}>
-            Select Patient
-          </button>
+          {mode === "select" && (
+            <button
+              className="mt-2 px-3 py-1 bg-blue-500 text-white rounded"
+              onClick={() => onSelect?.(identifiedPatient)}
+            >
+              Select Patient
+            </button>
+          )}
+
+          {mode === "create" && (
+            <p className="text-sm text-gray-500 mt-2">
+              You cannot create duplicate patient
+            </p>
+          )}
         </div>
       )}
 
-      {/* NEW PATIENT */}
-      {isNew === true && (
-        <div className="mt-3 p-3 border bg-yellow-50">
-          <p>New Patient</p>
-
+      {/* NEW PATIENT FORM */}
+      {isNewPatient === true && (
+        <div className="mt-3 space-y-2">
           <input
+            className="border p-2 w-full rounded"
             placeholder="Name"
             value={form.name}
             onChange={(e) =>
@@ -104,6 +132,7 @@ const PatientSelector: React.FC<Props> = ({ onSelect }) => {
           />
 
           <input
+            className="border p-2 w-full rounded"
             placeholder="Age"
             value={form.age}
             onChange={(e) =>
@@ -112,21 +141,23 @@ const PatientSelector: React.FC<Props> = ({ onSelect }) => {
           />
 
           <select
+            className="border p-2 w-full rounded"
             value={form.gender}
             onChange={(e) =>
               setForm({ ...form, gender: e.target.value })
             }
           >
             <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
           </select>
 
           <button
-            disabled={creating}
+            className="w-full bg-blue-500 text-white py-2 rounded"
+            disabled={!form.name || !form.age || !form.gender}
             onClick={handleCreate}
           >
-            {creating ? "Creating..." : "Create & Select"}
+            Create Patient
           </button>
         </div>
       )}
